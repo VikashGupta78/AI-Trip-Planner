@@ -1,0 +1,40 @@
+import { GoogleGenerativeAI } from "@google/generative-ai";
+  
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+  console.log("apiKey: ", apiKey);
+  const genAI = new GoogleGenerativeAI(apiKey);
+  
+  const model = genAI.getGenerativeModel({
+    model: "gemini-1.5-flash",
+  });
+  
+  const generationConfig = {
+    temperature: 1,
+    topP: 0.95,
+    topK: 40,
+    maxOutputTokens: 8192,
+    responseMimeType: "application/json",
+  };
+  
+    export const chatSession = model.startChat({
+      generationConfig,
+      history: [
+        {
+          role: "user",
+          parts: [
+            {text: "Generate a detailed travel plan for Las Vegas, Nevada, for a couple staying for 3 days on a cheap budget. Provide the following:\n\nHotel Options:\n\nInclude:\nHotel Name (e.g., Circus Circus)\nHotel Address (e.g., 2880 S Las Vegas Blvd, Las Vegas, NV)\nPrice Range (e.g., $50-$80/night)\nHotel Image URL (provide a representative image URL)\nGeo Coordinates (latitude and longitude of the hotel location)\nRating (out of 5, e.g., 3.8 stars)\nDescription (brief description of the hotel, such as amenities or unique features)\nDay-Wise Itinerary:\n\nFor each day, suggest a theme (e.g., Exploring the Strip, Downtown, Relaxation).\nFor each place, provide:\nPlace Name (e.g., Bellagio Fountains)\nPlace Details (short description, e.g., \"A spectacular water show that is free to watch.\")\nPlace Image URL (provide a representative image URL)\nGeo Coordinates (latitude and longitude of the place)\nTicket Pricing (e.g., Free or approximate ticket price)\nRating (out of 5, e.g., 4.5 stars)\nTravel Time (estimated time to reach the place from the previous location, e.g., 45 min)\nBest Time to Visit (e.g., Afternoon/Evening)\nProvide the entire output in clean, structured JSON format for direct use. Focus on cost-effective options and free activities where possible."},
+          ],
+        },
+        {
+          role: "model",
+          parts: [
+            {text: "```json\n{\n  \"location\": \"Las Vegas, Nevada\",\n  \"traveler\": \"Couple\",\n  \"totalDays\": 3,\n  \"budget\": \"Cheap\",\n  \"hotels\": [\n    {\n      \"hotelName\": \"Circus Circus Hotel & Casino\",\n      \"hotelAddress\": \"2880 S Las Vegas Blvd, Las Vegas, NV 89109\",\n      \"priceRange\": \"$50-$80/night\",\n      \"hotelImageUrl\": \"https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/CircusCircusLasVegasSign.jpg/1280px-CircusCircusLasVegasSign.jpg\",\n      \"geoCoordinates\": [36.1215, -115.1734],\n      \"rating\": 3.5,\n      \"description\": \"A budget-friendly hotel with a circus theme, offering affordable rooms and some on-site entertainment.  Slightly off the Strip, but accessible by bus.\"\n    },\n    {\n      \"hotelName\": \"Motel 6 Las Vegas - East Tropicana\",\n      \"hotelAddress\": \"3950 S Las Vegas Blvd, Las Vegas, NV 89109\",\n      \"priceRange\": \"$40-$70/night\",\n      \"hotelImageUrl\": \"https://images.trvl-media.com/hotels/10000000/500000/477000/476928/476928_50_z.jpg\",\n      \"geoCoordinates\": [36.1027, -115.1612],\n      \"rating\": 3.0,\n      \"description\": \"Basic but clean and affordable motel. Convenient location, although farther from the Strip's main attractions.\"\n    }\n  ],\n  \"itinerary\": [\n    {\n      \"day\": 1,\n      \"theme\": \"Exploring the Strip (Free Activities)\",\n      \"bestTime\": \"Afternoon/Evening\",\n      \"plan\": [\n        {\n          \"placeName\": \"The Strip Walking Tour\",\n          \"placeDetails\": \"Walk the length of the Strip, admiring the hotels and free shows.\",\n          \"placeImageUrl\": \"https://www.expedia.com/p/las-vegas-strip-nevada.dx1268996.picture\",\n          \"geoCoordinates\": [36.1146, -115.1728], \n          \"ticketPricing\": \"Free\",\n          \"rating\": 4.5,\n          \"travelTime\": \"N/A\"\n        },\n        {\n          \"placeName\": \"Bellagio Conservatory & Botanical Gardens\",\n          \"placeDetails\": \"Stunning floral displays, free to enter.\",\n          \"placeImageUrl\": \"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Bellagio_Conservatory_%26_Botanical_Gardens.jpg/1280px-Bellagio_Conservatory_%26_Botanical_Gardens.jpg\",\n          \"geoCoordinates\": [36.1147, -115.1762],\n          \"ticketPricing\": \"Free\",\n          \"rating\": 4.0,\n          \"travelTime\": \"15-20 min walk\"\n        },\n        {\n          \"placeName\": \"Fountains of Bellagio\",\n          \"placeDetails\": \"Spectacular water show, free to watch.\",\n          \"placeImageUrl\": \"https://www.bellagio.com/content/dam/bellagio/things-to-do/fountains-of-bellagio/BellagioFountainsHero_desktop.jpg\",\n          \"geoCoordinates\": [36.1147, -115.1762],\n          \"ticketPricing\": \"Free\",\n          \"rating\": 4.5,\n          \"travelTime\": \"Adjacent to the Gardens\"\n        }\n      ]\n    },\n    {\n      \"day\": 2,\n      \"theme\": \"Downtown & Fremont Street Experience\",\n      \"bestTime\": \"Evening\",\n      \"plan\": [\n        {\n          \"placeName\": \"Fremont Street Experience\",\n          \"placeDetails\": \"Vibrant pedestrian mall with light shows and street performers.\",\n          \"placeImageUrl\": \"https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Fremont_Street_Experience_at_night.jpg/1280px-Fremont_Street_Experience_at_night.jpg\",\n          \"geoCoordinates\": [36.1699, -115.1401],\n          \"ticketPricing\": \"Free (some attractions may have fees)\",\n          \"rating\": 4.0,\n          \"travelTime\": \"20-30 min taxi/rideshare or 45-60 min bus from the Strip\"\n        },\n        {\n          \"placeName\": \"Container Park\",\n          \"placeDetails\": \"Unique shopping and dining area made from shipping containers, with a giant praying mantis sculpture.\",\n          \"placeImageUrl\": \"https://www.containerpark.com/wp-content/uploads/2021/11/Hero-Image-1-1024x576.jpg\",\n          \"geoCoordinates\": [36.1702,-115.1351],\n          \"ticketPricing\": \"Free entry, but costs for food and purchases\",\n          \"rating\": 4.2,\n          \"travelTime\": \"10-15 min walk from Fremont Street Experience\"\n        }\n\n      ]\n    },\n    {\n      \"day\": 3,\n      \"theme\": \"Red Rock Canyon & Relaxation\",\n      \"bestTime\": \"Morning/Afternoon\",\n      \"plan\": [\n        {\n          \"placeName\": \"Red Rock Canyon National Conservation Area (Scenic Drive)\",\n          \"placeDetails\": \"Drive the 13-mile scenic loop and enjoy the stunning desert landscape.\",\n          \"placeImageUrl\": \"https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Red_Rock_Canyon_from_Calico_Basin_Trail.jpg/1280px-Red_Rock_Canyon_from_Calico_Basin_Trail.jpg\",\n          \"geoCoordinates\": [36.1865, -115.5395], \n          \"ticketPricing\": \"$15 per vehicle entrance fee\",\n          \"rating\": 4.5,\n          \"travelTime\": \"30-45 min drive from Las Vegas (depending on traffic)\"\n        },\n          {\n          \"placeName\": \"Hotel Pool (if available)\",\n          \"placeDetails\": \"Relax and enjoy the hotel pool in the afternoon.\",\n          \"placeImageUrl\": \"[Hotel Pool Image URL - Replace with actual image if available]\",\n          \"geoCoordinates\": \"[Hotel Geo Coordinates]\",\n          \"ticketPricing\": \"Free (usually included in hotel stay)\",\n          \"rating\": \"[Rating]\",\n          \"travelTime\": \"N/A\"\n        }\n      ]\n    }\n  ]\n}\n```\n\n**Note:** Remember to replace the bracketed placeholders like `[Hotel Pool Image URL]` with actual URLs and data gathered through your research.  Prices are estimates and may vary.  Always double-check the ticket pricing and opening hours on official websites before visiting.  Consider using public transportation (buses) to reduce transportation costs.\n"},
+          ],
+        },
+      ],
+    });
+  
+    // const result = await chatSession.sendMessage("INSERT_INPUT_HERE");
+    // console.log(result.response.text());
+  
+//   run();
